@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: bfa7d92d8edeb4c4692701b09a04167b
+timeCreated: 1522489479
+licenseType: Pro
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: src/login.lua
+  assetBundleVariant: 

@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: f6536eee3a36a28448cd0f422a4c1afa
+timeCreated: 1522324876
+licenseType: Pro
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: src/loading.lua
+  assetBundleVariant: 

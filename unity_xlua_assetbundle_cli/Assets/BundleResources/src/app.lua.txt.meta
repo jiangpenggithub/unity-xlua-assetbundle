@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: d8e5d7113cb924f49a185dea8e965872
+timeCreated: 1522489480
+licenseType: Pro
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: src/app.lua
+  assetBundleVariant: 

@@ -1,0 +1,118 @@
+-- Tencent is pleased to support the open source community by making xLua available.
+-- Copyright (C) 2016 THL A29 Limited, a Tencent company. All rights reserved.
+-- Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+-- http://opensource.org/licenses/MIT
+-- Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+g_App = {}
+
+function sendHttpMsg(url, method, params, callback)
+	CS.BoyApp.SendHttpMsg(url, method, params, function(err, ret)
+		if err ~= nil then 
+			return callback(err)
+		end
+		return callback(nil, rapidjson.decode(ret))
+    end)
+end
+
+function sendHttpMsgWithSign(url, method, params, callback)
+	CS.BoyApp.SendHttpMsgWithSign(url, method, params, function(err, ret)
+		if err ~= nil then 
+			return callback(err)
+		end
+		return callback(nil, rapidjson.decode(ret))
+    end, g_App.HTTP_PARAMS.key)
+end
+
+g_App.HTTP_SRV_URL = "";
+g_App.LOGIN_TOKEN = "";
+g_App.HTTP_PARAMS = nil;
+g_PlayerData = nil;
+g_BagData = nil;
+
+function g_App.sendLoginHttpMsg(url, login_type, token, callback) 
+	g_App.login_callback = callback;
+
+	local params = {}
+	params["plat_id"] = CS.BoyApp.GetTextAssetsFromResouces("platform")
+	params["token"] = rapidjson.encode(token)
+    sendHttpMsg(url.."/"..login_type, "POST", params, function(err, ret)
+    	if err ~= nil then return callback(err) end
+
+    	if ret.ret_code ~= 0 then return callback(ret.ret_msg) end
+
+    	g_App.HTTP_SRV_URL = ret.http_srv_url
+    	g_App.LOGIN_TOKEN = ret.token
+
+    	CS.BoyApp.wsGame:Connect(ret.ggaddress, function (ret)
+    		if ret then
+    			CS.BoyApp.SendLoginMsg(g_App.LOGIN_TOKEN)
+    		else
+    			if g_App.login_callback ~= nil then g_App.login_callback("连接网管服务器失败") end
+    		end
+    	end, g_App.onMsgHander)
+    end)
+end
+
+function g_App.sendPlayerHttpMsg(op, method, params, callback)
+	if g_App.HTTP_SRV_URL == "" or g_App.HTTP_PARAMS == nil then return callback("not login success") end
+	if params == nil then params = {} end
+	params["pid"] = g_App.HTTP_PARAMS.pid
+	params["dbid"] = g_App.HTTP_PARAMS.dbid
+
+	local url = g_App.HTTP_SRV_URL.."/player/"..g_App.HTTP_PARAMS.dbid.."/"..op
+	sendHttpMsgWithSign(url, method, params, callback)
+end
+
+local JsonMsgHandlers = {}
+
+function g_App.registerJsonMsgHanders(op, obj, callback)
+	if JsonMsgHandlers[op] == nil then JsonMsgHandlers[op] = {} end
+	JsonMsgHandlers[op][obj] = callback
+end
+
+function g_App.unRegisterJsonMsgHander(obj)
+	for k,v in pairs(JsonMsgHandlers) do
+		v[obj] = nil
+	end
+end
+
+function g_App.onMsgHander(msg)
+	local jmsg = rapidjson.decode(msg)
+	local handlers = JsonMsgHandlers[jmsg.op]
+	if handlers == nil then 
+		return print(op.." is not register")
+	end
+
+	for k,v in pairs(handlers) do
+		v(jmsg)
+	end
+end
+
+
+g_App.registerJsonMsgHanders("s2c_login", g_App, function (jmsg)
+	g_App.HTTP_PARAMS = jmsg.http_params
+
+	g_App.sendPlayerHttpMsg("c2s_login", "POST", { params = jmsg.params}, function (err, ret)
+		if err ~= nil then
+			if g_App.login_callback ~= nil then g_App.login_callback(err) end
+			return
+		end
+		if ret.ret_code ~= 0 then 
+			if g_App.login_callback ~= nil then g_App.login_callback(ret.ret_msg) end
+			return
+		end
+
+		g_PlayerData = ret.data
+		g_BagData = ret.bag
+
+		if g_App.login_callback ~= nil then g_App.login_callback() end
+	end)
+end)
+
+print("load app lua ver3")
+CS.BoyApp.LoadAssetBundleAndAllDependencies("res/loginui", function (obj )
+    CS.UnityEngine.SceneManagement.SceneManager.LoadScene("Assets/BundleResources/res/loginui.unity")
+end)
+
+
+

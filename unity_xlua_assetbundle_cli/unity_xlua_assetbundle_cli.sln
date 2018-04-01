@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unity_xlua_assetbundle_cli.CSharp", "unity_xlua_assetbundle_cli.CSharp.csproj", "{EEB2C23A-A1DB-ADC9-6412-7D31B13669CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unity_xlua_assetbundle_cli.CSharp.Editor", "unity_xlua_assetbundle_cli.CSharp.Editor.csproj", "{5C256A2A-5C59-4F1C-7BB4-C5A34165A4B3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EEB2C23A-A1DB-ADC9-6412-7D31B13669CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEB2C23A-A1DB-ADC9-6412-7D31B13669CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEB2C23A-A1DB-ADC9-6412-7D31B13669CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEB2C23A-A1DB-ADC9-6412-7D31B13669CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C256A2A-5C59-4F1C-7BB4-C5A34165A4B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C256A2A-5C59-4F1C-7BB4-C5A34165A4B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C256A2A-5C59-4F1C-7BB4-C5A34165A4B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C256A2A-5C59-4F1C-7BB4-C5A34165A4B3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

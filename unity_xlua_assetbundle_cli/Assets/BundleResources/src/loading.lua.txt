@@ -1,0 +1,143 @@
+﻿-- Tencent is pleased to support the open source community by making xLua available.
+-- Copyright (C) 2016 THL A29 Limited, a Tencent company. All rights reserved.
+-- Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+-- http://opensource.org/licenses/MIT
+-- Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+function string.split(input, delimiter)
+    input = tostring(input)
+    delimiter = tostring(delimiter)
+    if (delimiter=='') then return false end
+    local pos,arr = 0, {}
+    -- for each divider found
+    for st,sp in function() return string.find(input, delimiter, pos, true) end do
+        table.insert(arr, string.sub(input, pos, st - 1))
+        pos = sp + 1
+    end
+    table.insert(arr, string.sub(input, pos))
+    return arr
+end
+
+function string.trim(input)
+    input = string.gsub(input, "^[ \t\n\r]+", "")
+    return string.gsub(input, "[ \t\n\r]+$", "")
+end
+
+local function dump_value_(v)
+    if type(v) == "string" then
+        v = "\"" .. v .. "\""
+    end
+    return tostring(v)
+end
+
+_G["dump"] = function(value, desciption, nesting)
+    if type(nesting) ~= "number" then nesting = 3 end
+
+    local lookupTable = {}
+    local result = {}
+
+    local traceback = string.split(debug.traceback("", 2), "\n")
+
+    local function dump_(value, desciption, indent, nest, keylen)
+        desciption = desciption or "<var>"
+        local spc = ""
+        if type(keylen) == "number" then
+            spc = string.rep(" ", keylen - string.len(dump_value_(desciption)))
+        end
+        if type(value) ~= "table" then
+            result[#result +1 ] = string.format("%s%s%s = %s", indent, dump_value_(desciption), spc, dump_value_(value))
+        elseif lookupTable[tostring(value)] then
+            result[#result +1 ] = string.format("%s%s%s = *REF*", indent, dump_value_(desciption), spc)
+        else
+            lookupTable[tostring(value)] = true
+            if nest > nesting then
+                result[#result +1 ] = string.format("%s%s = *MAX NESTING*", indent, dump_value_(desciption))
+            else
+                result[#result +1 ] = string.format("%s%s = {", indent, dump_value_(desciption))
+                local indent2 = indent.."    "
+                local keys = {}
+                local keylen = 0
+                local values = {}
+                for k, v in pairs(value) do
+                    keys[#keys + 1] = k
+                    local vk = dump_value_(k)
+                    local vkl = string.len(vk)
+                    if vkl > keylen then keylen = vkl end
+                    values[k] = v
+                end
+                table.sort(keys, function(a, b)
+                    if type(a) == "number" and type(b) == "number" then
+                        return a < b
+                    else
+                        return tostring(a) < tostring(b)
+                    end
+                end)
+                for i, k in ipairs(keys) do
+                    dump_(values[k], k, indent2, nest + 1, keylen)
+                end
+                result[#result +1] = string.format("%s}", indent)
+            end
+        end
+    end
+    dump_(value, desciption, "- ", 1)
+    local str = ''
+    for i, line in ipairs(result) do
+        str = str..line.."\n"
+    end
+    print(str)
+end
+
+_G["rapidjson"] = require('rapidjson')
+
+function start()
+    print("enter loading scene...VVV")    
+    PLATFORM = CS.BoyApp.GetTextAssetsFromResouces("platform")
+    FullPkgVer = tonumber(CS.BoyApp.GetTextAssetsFromResouces("pkgver"))
+    LocalPkgVer = tonumber(CS.BoyApp.GetTextAssetsFromPersistent("pkgver") or FullPkgVer)
+
+    CS.BoyApp.SendHttpMsg("http://127.0.0.1/version_2000.txt", "GET", nil, function (err, ret)
+        if err ~= nil then return print("获取服务器信息失败") end
+        CFG_Version = rapidjson.decode(ret)
+       if tonumber(CFG_Version.pkgver) > LocalPkgVer then
+            beginUpdate(CFG_Version.pkgver, CFG_Version.update_url)
+        else
+            endUpdate();
+        end
+    end)
+end
+
+function beginUpdate(ver, url)
+    local needUpdateCnt = 0;
+    CS.BoyApp.SendHttpMsg(url.."/assets_"..string.format("%06d", tonumber(ver)).."/file_list.txt", "GET", nil, function (err, ret)
+        if err ~= nil then return print("获取更新列表失败") end
+        local jret = rapidjson.decode(ret)
+        for k,v in pairs(jret) do
+            if v > LocalPkgVer then
+                needUpdateCnt = needUpdateCnt + 1
+                CS.BoyApp.UpdateAssetBundle(k, url.."/assets_"..string.format("%06d", v).."/"..k, v, function (name)
+                    print("update assets "..name.." ver "..v);
+                    needUpdateCnt = needUpdateCnt - 1;
+                    if needUpdateCnt == 0 then
+                        CS.BoyApp.SaveVersionInfo(tonumber(ver));
+                        endUpdate();
+                    end
+                end)
+            end
+        end
+    end)
+end
+
+function endUpdate()
+    CS.BoyApp.LoadAssetBundleAndAllDependencies("src/app.lua", function (obj)
+        require "src/app.lua"
+    end)
+end
+
+
+
+
+
+
+
+
+
+
