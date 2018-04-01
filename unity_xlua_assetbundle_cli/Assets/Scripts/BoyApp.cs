@@ -124,7 +124,7 @@ public class BoyApp : MonoBehaviour{
     //更新相关
     public static string GetAssetBundlePath(string name) {
         if (localFileInfo.ContainsKey(name)) return localFileInfo[name];
-        return "file://" + Application.dataPath + "/AssetBundle/" + name;
+        return Application.streamingAssetsPath + "/" + name;
     }
 
     public static int GetAssetBundleVer(string name) {

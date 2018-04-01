@@ -6,14 +6,50 @@ using UnityEngine;
 
 public class NewAssetBundleEditor : Editor {
 
-    [MenuItem("New AB Editor/Build AssetBundles")]
-    static void BuildMainAssetBundles() {
+    [MenuItem("New AB Editor/Build AssetBundles-Windows")]
+    static void BuildAssetBundlesWindows() {
+        if (Directory.Exists("AssetsBundle_Windows/AssetBundle")) {
+            Directory.Delete("AssetsBundle_Windows/AssetBundle", true);
+        }
+        else {
+            Directory.CreateDirectory("AssetsBundle_Windows/AssetBundle");
+        }
         //第一个参数获取的是AssetBundle存放的相对地址。
-       BuildPipeline.BuildAssetBundles(
-         AssetBundleConfig.ASSETBUNDLE_PATH.Substring(AssetBundleConfig.PROJECT_PATH.Length),
-         BuildAssetBundleOptions.UncompressedAssetBundle |
-         BuildAssetBundleOptions.DeterministicAssetBundle,
-         BuildTarget.StandaloneWindows64);
+        BuildPipeline.BuildAssetBundles("AssetsBundle_Windows/AssetBundle",
+          BuildAssetBundleOptions.UncompressedAssetBundle |
+          BuildAssetBundleOptions.DeterministicAssetBundle,
+          BuildTarget.StandaloneWindows64);
+    }
+
+
+    [MenuItem("New AB Editor/Build AssetBundles-Android")]
+    static void BuildAssetBundlesAndroid() {
+        if (Directory.Exists("AssetsBundle_Android/AssetBundle")) {
+            Directory.Delete("AssetsBundle_Android/AssetBundle", true);
+        }
+        else {
+            Directory.CreateDirectory("AssetsBundle_Android/AssetBundle");
+        }
+        //第一个参数获取的是AssetBundle存放的相对地址。
+        BuildPipeline.BuildAssetBundles("AssetsBundle_Android/AssetBundle",
+          BuildAssetBundleOptions.UncompressedAssetBundle |
+          BuildAssetBundleOptions.DeterministicAssetBundle,
+          BuildTarget.Android);
+    }
+
+    [MenuItem("New AB Editor/Build AssetBundles-IOS")]
+    static void BuildAssetBundlesIOS() {
+        if (Directory.Exists("AssetsBundle_IOS/AssetBundle")) {
+            Directory.Delete("AssetsBundle_IOS/AssetBundle", true);
+        }
+        else {
+            Directory.CreateDirectory("AssetsBundle_IOS/AssetBundle");
+        }
+        //第一个参数获取的是AssetBundle存放的相对地址。
+        BuildPipeline.BuildAssetBundles("AssetsBundle_IOS/AssetBundle",
+          BuildAssetBundleOptions.UncompressedAssetBundle |
+          BuildAssetBundleOptions.DeterministicAssetBundle,
+          BuildTarget.Android);
     }
 
 
@@ -35,7 +71,7 @@ public class NewAssetBundleEditor : Editor {
             DirectoryInfo dir = new DirectoryInfo(fullPath);
 
             var files = dir.GetFiles("*", SearchOption.AllDirectories);
-            ;
+            
             for (var i = 0; i < files.Length; ++i)
             {
                 var fileInfo = files[i];
@@ -89,7 +125,7 @@ public class NewAssetBundleEditor : Editor {
             DirectoryInfo dir = new DirectoryInfo(fullPath);
 
             var files = dir.GetFiles("*", SearchOption.AllDirectories);
-            ;
+            
             for (var i = 0; i < files.Length; ++i) {
                 var fileInfo = files[i];
                 EditorUtility.DisplayProgressBar("清除AssetName名称",
