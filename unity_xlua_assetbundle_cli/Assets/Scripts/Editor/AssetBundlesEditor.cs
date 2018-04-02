@@ -11,9 +11,8 @@ public class NewAssetBundleEditor : Editor {
         if (Directory.Exists("AssetsBundle_Windows/AssetBundle")) {
             Directory.Delete("AssetsBundle_Windows/AssetBundle", true);
         }
-        else {
-            Directory.CreateDirectory("AssetsBundle_Windows/AssetBundle");
-        }
+        Directory.CreateDirectory("AssetsBundle_Windows/AssetBundle");
+        
         //第一个参数获取的是AssetBundle存放的相对地址。
         BuildPipeline.BuildAssetBundles("AssetsBundle_Windows/AssetBundle",
           BuildAssetBundleOptions.UncompressedAssetBundle |
@@ -27,9 +26,7 @@ public class NewAssetBundleEditor : Editor {
         if (Directory.Exists("AssetsBundle_Android/AssetBundle")) {
             Directory.Delete("AssetsBundle_Android/AssetBundle", true);
         }
-        else {
-            Directory.CreateDirectory("AssetsBundle_Android/AssetBundle");
-        }
+        Directory.CreateDirectory("AssetsBundle_Android/AssetBundle");
         //第一个参数获取的是AssetBundle存放的相对地址。
         BuildPipeline.BuildAssetBundles("AssetsBundle_Android/AssetBundle",
           BuildAssetBundleOptions.UncompressedAssetBundle |
