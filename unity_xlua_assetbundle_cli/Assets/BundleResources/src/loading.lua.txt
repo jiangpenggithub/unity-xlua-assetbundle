@@ -94,7 +94,7 @@ function start()
     FullPkgVer = tonumber(CS.BoyApp.GetTextAssetsFromResouces("pkgver"))
     LocalPkgVer = tonumber(CS.BoyApp.GetTextAssetsFromPersistent("pkgver") or FullPkgVer)
 
-    CS.BoyApp.SendHttpMsg("http://127.0.0.1/version_2000.txt", "GET", nil, function (err, ret)
+    CS.BoyApp.SendHttpMsg("http://192.168.6.210:90/version_2000.txt", "GET", nil, function (err, ret)
         if err ~= nil then return print("获取服务器信息失败") end
         CFG_Version = rapidjson.decode(ret)
        if tonumber(CFG_Version.pkgver) > LocalPkgVer then
