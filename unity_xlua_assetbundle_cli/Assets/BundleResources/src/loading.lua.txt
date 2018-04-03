@@ -96,7 +96,7 @@ function start()
 
     CS.BoyApp.SendHttpMsg("http://192.168.6.210:90/version_2000.txt", "GET", nil, function (err, ret)
         if err ~= nil then return print("获取服务器信息失败") end
-        CFG_Version = rapidjson.decode(ret)
+        _G["CFG_Version"] = rapidjson.decode(ret)
        if tonumber(CFG_Version.pkgver) > LocalPkgVer then
             beginUpdate(CFG_Version.pkgver, CFG_Version.update_url)
         else
