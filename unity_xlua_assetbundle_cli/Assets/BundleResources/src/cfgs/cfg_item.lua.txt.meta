@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 00124b90a2ed66e4cbb738f4db67e1d7
+timeCreated: 1522828135
+licenseType: Pro
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: src/cfgs/cfg_item.lua
+  assetBundleVariant: 

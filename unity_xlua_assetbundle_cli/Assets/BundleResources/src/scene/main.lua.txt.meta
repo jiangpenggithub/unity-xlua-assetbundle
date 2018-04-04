@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 01fe92ead9d6d8847b5ecaa979e8a1ae
+timeCreated: 1522830753
+licenseType: Pro
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: src/scene/main.lua
+  assetBundleVariant: 

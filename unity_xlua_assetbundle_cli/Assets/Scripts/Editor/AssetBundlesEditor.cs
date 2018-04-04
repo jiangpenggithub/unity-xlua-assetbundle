@@ -18,6 +18,19 @@ public class NewAssetBundleEditor : Editor {
           BuildAssetBundleOptions.UncompressedAssetBundle |
           BuildAssetBundleOptions.DeterministicAssetBundle,
           BuildTarget.StandaloneWindows64);
+
+        if (Directory.Exists("Assets/StreamingAssets")) {
+            Directory.Delete("Assets/StreamingAssets", true);
+        }
+        string[] files = Directory.GetFiles("AssetsBundle_Windows/AssetBundle", "*", SearchOption.AllDirectories);
+        foreach (var fileName in files) {
+            string shortName = fileName.Remove(0, "AssetsBundle_Windows/AssetBundle".Length + 1);
+            if (shortName.LastIndexOf(".meta") == shortName.Length - 5) continue;
+            string dirName = "";
+            if (shortName.LastIndexOf("\\") > 0) dirName = shortName.Substring(0, shortName.LastIndexOf("\\"));
+            Directory.CreateDirectory("Assets/StreamingAssets/" + dirName);
+            File.Copy(fileName, "Assets/StreamingAssets/" + shortName, true);
+        }
     }
 
 

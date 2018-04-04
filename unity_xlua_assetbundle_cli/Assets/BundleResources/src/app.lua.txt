@@ -33,7 +33,7 @@ function g_App.sendLoginHttpMsg(url, login_type, token, callback)
 	g_App.login_callback = callback;
 
 	local params = {}
-	params["plat_id"] = CS.BoyApp.GetTextAssetsFromResouces("platform")
+	params["plat_id"] = PLATFORM
 	params["token"] = rapidjson.encode(token)
     sendHttpMsg(url.."/"..login_type, "POST", params, function(err, ret)
     	if err ~= nil then return callback(err) end
@@ -108,6 +108,8 @@ g_App.registerJsonMsgHanders("s2c_login", g_App, function (jmsg)
 		if g_App.login_callback ~= nil then g_App.login_callback() end
 	end)
 end)
+
+
 
 print("load app lua ver3")
 CS.BoyApp.LoadAssetBundleAndAllDependencies("res/loginui", function (obj )

@@ -1,0 +1,1 @@
+local cfg = {["11001"] = {ID="11001",Name="Work_leaflet_11001",StarLevel="1",UseEnergy="1",Scoin="20",Item="0",JobCondition="0",SuitCondition="5",PropertyTybe1="0",Num1="0",PropertyTybe2="0",Num2="0",PropertyTybe3="0",Num3="0",PropertyTybe4="0",Num4="0",},} return cfg

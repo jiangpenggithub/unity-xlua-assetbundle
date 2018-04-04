@@ -1,0 +1,43 @@
+﻿
+function start()
+    btnLogin:GetComponent("Button").onClick:AddListener(function()
+
+       	g_App.sendLoginHttpMsg("http://192.168.6.210:8000", "windows", { act = "jiangpeng"}, function(err)
+
+       		if err ~= nil then return print("登陆失败 "..err) end
+
+       		dump(g_PlayerData)
+       		dump(g_BagData)
+
+          loadPreResource()
+       	end)
+    end)
+end
+
+function loadPreResource()
+    local tasks = {
+      "src/cfgs/cfg_item.lua",
+      "src/cfgs/cfg_work.lua",
+      function () CFG_Item = require "src/cfgs/cfg_item.lua" end,
+      function () CFG_Work = require "src/cfgs/cfg_work.lua" end,
+    }
+
+    local beginTask = function (idx, task, callback)
+      if idx > #tasks then return callback() end
+
+      if type(tasks[idx]) == "string" then
+        CS.BoyApp.LoadAssetBundle(tasks[idx], function (asset)
+            task(idx + 1, task, callback)
+        end)
+      else
+        tasks[idx]()
+        task(idx + 1, task, callback)
+      end
+    end
+
+    beginTask(1, beginTask, function ()
+      CS.BoyApp.LoadAssetBundleAndAllDependencies("res/mainui", function (obj )
+          CS.UnityEngine.SceneManagement.SceneManager.LoadScene("Assets/BundleResources/res/mainui.unity")
+      end)
+    end)
+end

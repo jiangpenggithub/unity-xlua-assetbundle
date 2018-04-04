@@ -90,9 +90,9 @@ _G["rapidjson"] = require('rapidjson')
 
 function start()
     print("enter loading scene...VVV")    
-    PLATFORM = CS.BoyApp.GetTextAssetsFromResouces("platform")
-    FullPkgVer = tonumber(CS.BoyApp.GetTextAssetsFromResouces("pkgver"))
-    LocalPkgVer = tonumber(CS.BoyApp.GetTextAssetsFromPersistent("pkgver") or FullPkgVer)
+    _G["PLATFORM"] = CS.BoyApp.GetTextAssetsFromResouces("platform")
+    _G["FullPkgVer"] = tonumber(CS.BoyApp.GetTextAssetsFromResouces("pkgver"))
+    _G["LocalPkgVer"] = tonumber(CS.BoyApp.GetTextAssetsFromPersistent("pkgver") or FullPkgVer)
 
     CS.BoyApp.SendHttpMsg("http://192.168.6.210:90/version_2000.txt", "GET", nil, function (err, ret)
         if err ~= nil then return print("获取服务器信息失败") end

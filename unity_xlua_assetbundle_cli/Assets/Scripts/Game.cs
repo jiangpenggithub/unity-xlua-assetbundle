@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,16 @@ public class Game : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        //Caching.ClearCache();
+        Caching.ClearCache();
+        int FullPkgVer = Convert.ToInt32(BoyApp.GetTextAssetsFromResouces("pkgver"));
+        string LocalPkgVer = BoyApp.GetTextAssetsFromPersistent("pkgver");
+        if (LocalPkgVer != null && Convert.ToInt32(LocalPkgVer) < FullPkgVer) {
+            Caching.ClearCache();
+            File.Delete(Application.persistentDataPath + "/loadfileinfo.txt");
+            File.Delete(Application.persistentDataPath + "/loadfilever.txt");
+            File.Delete(Application.persistentDataPath + "/pkgver");
+        }
+
         if (File.Exists(Application.persistentDataPath + "/loadfileinfo.txt")) {
             BoyApp.localFileInfo = (Dictionary<string, string>)JsonConvert.DeserializeObject(File.ReadAllText(Application.persistentDataPath + "/loadfileinfo.txt"), typeof(Dictionary<string, string>));
         }

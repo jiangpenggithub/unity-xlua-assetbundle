@@ -1,0 +1,4 @@
+﻿
+function start()
+  dump("进入主界面")
+end
