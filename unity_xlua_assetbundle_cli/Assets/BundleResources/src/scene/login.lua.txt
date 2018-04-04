@@ -9,6 +9,8 @@ function start()
        		dump(g_PlayerData)
        		dump(g_BagData)
 
+          g_App.login_callback = nil
+          
           loadPreResource()
        	end)
     end)

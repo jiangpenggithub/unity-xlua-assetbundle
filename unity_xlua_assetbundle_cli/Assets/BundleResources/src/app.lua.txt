@@ -14,13 +14,13 @@ function sendHttpMsg(url, method, params, callback)
     end)
 end
 
-function sendHttpMsgWithSign(url, method, params, callback)
+function sendHttpMsgWithSign(url, method, params, callback, appkey)
 	CS.BoyApp.SendHttpMsgWithSign(url, method, params, function(err, ret)
 		if err ~= nil then 
 			return callback(err)
 		end
 		return callback(nil, rapidjson.decode(ret))
-    end, g_App.HTTP_PARAMS.key)
+    end, appkey)
 end
 
 g_App.HTTP_SRV_URL = "";
@@ -60,7 +60,7 @@ function g_App.sendPlayerHttpMsg(op, method, params, callback)
 	params["dbid"] = g_App.HTTP_PARAMS.dbid
 
 	local url = g_App.HTTP_SRV_URL.."/player/"..g_App.HTTP_PARAMS.dbid.."/"..op
-	sendHttpMsgWithSign(url, method, params, callback)
+	sendHttpMsgWithSign(url, method, params, callback, g_App.HTTP_PARAMS.key)
 end
 
 local JsonMsgHandlers = {}
@@ -91,7 +91,6 @@ end
 
 g_App.registerJsonMsgHanders("s2c_login", g_App, function (jmsg)
 	g_App.HTTP_PARAMS = jmsg.http_params
-
 	g_App.sendPlayerHttpMsg("c2s_login", "POST", { params = jmsg.params}, function (err, ret)
 		if err ~= nil then
 			if g_App.login_callback ~= nil then g_App.login_callback(err) end

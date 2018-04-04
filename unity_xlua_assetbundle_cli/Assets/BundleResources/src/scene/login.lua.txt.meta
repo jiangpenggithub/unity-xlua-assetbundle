@@ -5,5 +5,5 @@ licenseType: Pro
 TextScriptImporter:
   externalObjects: {}
   userData: 
-  assetBundleName: src/login.lua
+  assetBundleName: src/scene/login.lua
   assetBundleVariant: 
